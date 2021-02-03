@@ -13,7 +13,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::orderBy('id', 'ASC')->paginate();
+        $posts = Post::orderBy('id', 'ASC')->paginate(1);
 
         return view('admin.posts.index', compact('posts'));
     }
@@ -89,10 +89,12 @@ class PostController extends Controller
 
     public function search(Request $request)
     {
+        $filters = $request->except('_token');
+
         $posts = Post::where('title', 'LIKE', "%{$request->search}%")
                         ->orwhere('content', 'LIKE', "%{$request->search}%")
-                        ->paginate();
+                        ->paginate(1);
 
-        return view('admin.posts.index', compact('posts'));
+        return view('admin.posts.index', compact('posts', 'filters'));
     }
 }
